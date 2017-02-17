@@ -1,7 +1,7 @@
 angular
   .module('AuthSampleApp', [
-    'ui.router'
-    // TODO #2: Add satellizer module
+    'ui.router',
+    'satellizer'
   ])
   .controller('MainController', MainController)
   .controller('HomeController', HomeController)
@@ -131,8 +131,9 @@ function LoginController (Account) {
     Account
       .login(vm.new_user)
       .then(function(){
-         // TODO #4: clear sign up form
-         // TODO #5: redirect to '/profile'
+        // step 4 clear form
+         vm.new_user = {}
+        //  step 5 redirect to /profile
       })
   };
 }
@@ -197,10 +198,12 @@ function Account($http, $q, $auth) {
   function login(userData) {
     return (
       $auth
-        .satellizerLogin(userData) // login (https://github.com/sahat/satellizer#authloginuser-options)
+        .login(userData) // login (https://github.com/sahat/satellizer#authloginuser-options)
         .then(
           function onSuccess(response) {
-            //TODO #3: set token (https://github.com/sahat/satellizer#authsettokentoken)
+            // Todo:3
+            $auth.setToken(token)
+            console.log(token + "token")
           },
 
           function onError(error) {
@@ -212,11 +215,27 @@ function Account($http, $q, $auth) {
 
   function logout() {
     // returns a promise!!!
+    return (
+      $auth
+      .logout()
+      .then(
+        function onSuccess(response) {
+        // Todo:3
+        token = null;
+      },
+
+      function onError(error) {
+        console.error(error);
+      }
+    )
+  );
+
+    }
     // TODO #6: logout the user by removing their jwt token (using satellizer)
     // Make sure to also wipe the user's data from the application:
     // self.user = null;
     // returns a promise!!!
-  }
+  
 
   function currentUser() {
     if ( self.user ) { return self.user; }
