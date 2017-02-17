@@ -12,6 +12,7 @@ var userSchema = new Schema({
   picture: String
 });
 
+// Updates user created/updated dates
 userSchema.pre('save', function (next) {
   // set created and updated
   now = new Date();
@@ -20,7 +21,7 @@ userSchema.pre('save', function (next) {
     this.created = now;
   }
 
-  // encrypt password
+// encrypt via has and salts password
   var user = this;
   if (!user.isModified('password')) {
     return next();
@@ -33,6 +34,7 @@ userSchema.pre('save', function (next) {
   });
 });
 
+// checking to see if passwords match
 userSchema.methods.comparePassword = function (password, done) {
   bcrypt.compare(password, this.password, function (err, isMatch) {
     done(err, isMatch);
